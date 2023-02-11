@@ -1,112 +1,126 @@
-import 'difficulty.dart';
 import 'package:flutter/material.dart';
+import 'difficulty.dart';
 
 class Task extends StatefulWidget {
   final String name;
+  final String image;
   final int difficulty;
 
-  const Task({
-    Key? key,
-    required this.name,
-    required this.difficulty,
-  }) : super(key: key);
+  Task(this.name, this.image, this.difficulty, {Key? key}) : super(key: key);
+
+  int elevel = 0;
 
   @override
   State<Task> createState() => _TaskState();
 }
 
 class _TaskState extends State<Task> {
-  int elevel = 0;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Card(
-        elevation: 20,
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  height: 100,
-                  width: 100,
-                  color: Colors.black26,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: Image.asset(
-                      'assets/imgs/naruto.jpg',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4), color: Colors.blue),
+            height: 140,
+          ),
+          Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  color: Colors.white,
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                height: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(
-                        width: 200,
-                        child: Text(
-                          widget.name,
-                          style: TextStyle(
-                              fontSize: 20, overflow: TextOverflow.ellipsis),
-                        )),
-                    Difficulty(difficultyLevel: widget.difficulty)
-                  ],
-                ),
-                ElevatedButton(
-                  onPressed: (() {
-                    setState(() {
-                      elevel++;
-                    });
-                  }),
-                  child: Column(
-                    children: [
-                      Icon(Icons.arrow_drop_up),
-                      Text(
-                        'UP',
-                        style: TextStyle(fontSize: 12),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-            Stack(
-              children: [
-                Container(
-                  height: 32,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: Colors.blue,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: 200,
-                        child: LinearProgressIndicator(
-                          color: Colors.white,
-                          value: widget.difficulty > 0
-                              ? (elevel / widget.difficulty) / 10
-                              : 1,
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: Colors.black26,
+                      ),
+                      width: 72,
+                      height: 100,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: Image.network(
+                          widget.image,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                      Text(
-                        'Nível $elevel',
-                        style: TextStyle(fontSize: 14, color: Colors.white),
-                      ),
-                    ],
-                  ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                            width: 200,
+                            child: Text(
+                              widget.name,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            )),
+                        Difficulty(
+                          dificultyLevel: widget.difficulty,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 52,
+                      width: 52,
+                      child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              widget.elevel++;
+                            });
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: const [
+                              Icon(Icons.arrow_drop_up),
+                              Text(
+                                'UP',
+                                style: TextStyle(fontSize: 12),
+                              )
+                            ],
+                          )),
+                    )
+                  ],
                 ),
-              ],
-            )
-          ],
-        ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: SizedBox(
+                      width: 200,
+                      child: LinearProgressIndicator(
+                        color: Colors.white,
+                        value: (widget.difficulty > 0)
+                            ? (widget.elevel / widget.difficulty) / 10
+                            : 1,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Text(
+                      'Nível: ${widget.elevel}',
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
